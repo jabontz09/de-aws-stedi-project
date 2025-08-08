@@ -29,11 +29,11 @@ DEFAULT_DATA_QUALITY_RULESET = """
 # Script generated for node AWS Glue Data Catalog
 AWSGlueDataCatalog_node1754614935956 = glueContext.create_dynamic_frame.from_catalog(database="stedi_db", table_name="customer_trusted", transformation_ctx="AWSGlueDataCatalog_node1754614935956")
 
-# Script generated for node Amazon S3
-AmazonS3_node1754614887895 = glueContext.create_dynamic_frame.from_options(format_options={"multiLine": "false"}, connection_type="s3", format="json", connection_options={"paths": ["s3://jb-testspark/accelerometer/landing/"], "recurse": True}, transformation_ctx="AmazonS3_node1754614887895")
+# Script generated for node accelerometer_trusted
+accelerometer_trusted_node1754614887895 = glueContext.create_dynamic_frame.from_catalog(database="stedi_db", table_name="accelerometer_trusted", transformation_ctx="accelerometer_trusted_node1754614887895")
 
 # Script generated for node SQL Query
-SqlQuery5213 = '''
+SqlQuery5033 = '''
 select distinct
     c.customername, 
     c.email,
@@ -45,11 +45,11 @@ select distinct
     c.sharewithresearchasofdate,
     c.sharewithpublicasofdate,
     c.sharewithfriendsasofdate
-from accelerometer_landing l
+from accelerometer_trusted a
 inner join customer_trusted c
-    on l.user = c.email
+    on a.user = c.email
 '''
-SQLQuery_node1754615206593 = sparkSqlQuery(glueContext, query = SqlQuery5213, mapping = {"customer_trusted":AWSGlueDataCatalog_node1754614935956, "accelerometer_landing":AmazonS3_node1754614887895}, transformation_ctx = "SQLQuery_node1754615206593")
+SQLQuery_node1754615206593 = sparkSqlQuery(glueContext, query = SqlQuery5033, mapping = {"customer_trusted":AWSGlueDataCatalog_node1754614935956, "accelerometer_trusted":accelerometer_trusted_node1754614887895}, transformation_ctx = "SQLQuery_node1754615206593")
 
 # Script generated for node Amazon S3
 EvaluateDataQuality().process_rows(frame=SQLQuery_node1754615206593, ruleset=DEFAULT_DATA_QUALITY_RULESET, publishing_options={"dataQualityEvaluationContext": "EvaluateDataQuality_node1754614742900", "enableDataQualityResultsPublishing": True}, additional_options={"dataQualityResultsPublishing.strategy": "BEST_EFFORT", "observations.scope": "ALL"})
